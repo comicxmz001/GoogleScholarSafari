@@ -1,3 +1,8 @@
+/**
+ * Main extension functionality for Google Scholar search
+ * Handles search operations, result display, and citation management
+ */
+
 document.addEventListener('DOMContentLoaded', async () => {
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
@@ -7,17 +12,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tab = await browser.tabs.query({ active: true, currentWindow: true });
     searchInput.value = tab[0].title;
 
-    // Function to clean text content
+    /**
+     * Cleans text content by removing special characters and extra whitespace
+     * @param {string} text - The text to clean
+     * @returns {string} Cleaned text
+     */
     function cleanText(text) {
         return text.replace(/\u00A0/g, ' ').replace(/\u0082/g, '').trim();
     }
 
-    // Function to extract citation count
+    /**
+     * Extracts the first number from a text string
+     * Used for parsing citation and version counts
+     * @param {string} text - Text containing a number
+     * @returns {string|null} Extracted number or null if not found
+     */
     function extractNumber(text) {
         const match = text.match(/\d+/);
         return match ? match[0] : null;
     }
 
+    /**
+     * Fetches and displays citation information in a modal dialog
+     * @param {string} citationUrl - URL to fetch citations from
+     */
     async function fetchCitations(citationUrl) {
         try {
             const response = await browser.runtime.sendMessage({
@@ -115,7 +133,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Function to perform the search
+    /**
+     * Performs a Google Scholar search and displays results
+     * @param {string} query - Search query
+     */
     async function performSearch(query) {
         resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
         
@@ -267,12 +288,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Perform initial search with tab title
     performSearch(tab[0].title);
 
-    // Handle search button click
+    // Event Listeners
     searchButton.addEventListener('click', () => {
         performSearch(searchInput.value);
     });
 
-    // Handle enter key in search input
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             performSearch(searchInput.value);
