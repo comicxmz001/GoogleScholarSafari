@@ -14,23 +14,21 @@
         "512": "images/icon-512.png"
     },
 
-
     "background": {
-        "scripts": [ "background.js" ],
-        "persistent": false
+        "scripts": ["background.js"]
     },
-
-    "content_scripts": [{
-        "js": [ "content.js" ],
-        "matches": [ "*://example.com/*" ]
-    }],
 
     "action": {
         "default_popup": "popup.html",
         "default_icon": "images/book-closed.svg"
     },
 
-    "permissions": ["activeTab"],
-    
-    "default_title": "Open in Google Scholar",
+    "permissions": [
+        "activeTab",
+        "nativeMessaging"
+    ],
+
+    "host_permissions": [
+        "https://scholar.google.com/*"
+    ]
 }
