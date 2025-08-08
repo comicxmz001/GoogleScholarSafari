@@ -1,4 +1,6 @@
 {
+    // Manifest for Google Scholar Safari extension
+
     "manifest_version": 3,
     "default_locale": "en",
 
@@ -23,11 +25,14 @@
         "default_icon": "images/book-closed.svg"
     },
 
+    // activeTab allows reading current tab title
+    // nativeMessaging enables optional native integration
     "permissions": [
         "activeTab",
         "nativeMessaging"
     ],
 
+    // Permit background fetches to Google Scholar
     "host_permissions": [
         "https://scholar.google.com/*"
     ]
