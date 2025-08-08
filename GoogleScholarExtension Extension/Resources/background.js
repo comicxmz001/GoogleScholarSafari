@@ -19,13 +19,16 @@ browser.runtime.onMessage.addListener((request, sender) => {
             headers: headers
         })
         .then(async response => {
+            // Read body so server messages can be surfaced on errors
             const body = await response.text();
             if (!response.ok) {
+                // Include status and trimmed body in thrown error for context
                 throw new Error(`Scholar request failed: ${response.status} ${response.statusText} - ${body.trim()}`);
             }
             return { success: true, html: body };
         })
         .catch(error => {
+            // Propagate enriched error message to caller
             return { success: false, error: error.message };
         });
     }
@@ -40,13 +43,16 @@ browser.runtime.onMessage.addListener((request, sender) => {
             headers: headers
         })
         .then(async response => {
+            // Read body to expose server-provided errors
             const body = await response.text();
             if (!response.ok) {
+                // Include status and trimmed body in thrown error for context
                 throw new Error(`Citation request failed: ${response.status} ${response.statusText} - ${body.trim()}`);
             }
             return { success: true, html: body };
         })
         .catch(error => {
+            // Propagate enriched error message to caller
             return { success: false, error: error.message };
         });
     }
