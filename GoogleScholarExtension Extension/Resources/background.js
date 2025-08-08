@@ -18,9 +18,12 @@ browser.runtime.onMessage.addListener((request, sender) => {
         return fetch(`https://scholar.google.com/scholar?q=${encodeURIComponent(request.query)}&hl=en`, {
             headers: headers
         })
-        .then(response => response.text())
-        .then(html => {
-            return { success: true, html: html };
+        .then(async response => {
+            const body = await response.text();
+            if (!response.ok) {
+                throw new Error(`Scholar request failed: ${response.status} ${response.statusText} - ${body.trim()}`);
+            }
+            return { success: true, html: body };
         })
         .catch(error => {
             return { success: false, error: error.message };
@@ -36,9 +39,12 @@ browser.runtime.onMessage.addListener((request, sender) => {
         return fetch(request.url, {
             headers: headers
         })
-        .then(response => response.text())
-        .then(html => {
-            return { success: true, html: html };
+        .then(async response => {
+            const body = await response.text();
+            if (!response.ok) {
+                throw new Error(`Citation request failed: ${response.status} ${response.statusText} - ${body.trim()}`);
+            }
+            return { success: true, html: body };
         })
         .catch(error => {
             return { success: false, error: error.message };

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 url: citationUrl
             });
 
-            if (!response.success) throw new Error('Failed to fetch citations');
+            if (!response.success) throw new Error(response.error);
 
             const parser = new DOMParser();
             const doc = parser.parseFromString(response.html, 'text/html');
@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (error) {
             console.error('Error fetching citations:', error);
+            alert(`Error fetching citations: ${error.message}`);
         }
     }
 
@@ -177,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 query: query
             });
 
-            if (!response.success) throw new Error('Search failed');
+            if (!response.success) throw new Error(response.error);
             
             const parser = new DOMParser();
             const doc = parser.parseFromString(response.html, 'text/html');
@@ -306,13 +307,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 resultsDiv.appendChild(resultItem);
             });
         } catch (error) {
-            resultsDiv.innerHTML = `
-                <div class="result-item">
-                    Unable to fetch results directly. 
-                    <a href="https://scholar.google.com/scholar?q=${encodeURIComponent(query)}" target="_blank">
-                        Click here to search on Google Scholar
-                    </a>
-                </div>`;
+            resultsDiv.innerHTML = '';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'result-item';
+            errorDiv.textContent = `Unable to fetch results directly: ${error.message}. `;
+            const link = document.createElement('a');
+            link.href = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
+            link.target = '_blank';
+            link.textContent = 'Click here to search on Google Scholar';
+            errorDiv.appendChild(link);
+            resultsDiv.appendChild(errorDiv);
         }
     }
 
