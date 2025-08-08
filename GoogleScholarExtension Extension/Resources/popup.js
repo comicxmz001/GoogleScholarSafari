@@ -108,10 +108,41 @@ document.addEventListener('DOMContentLoaded', async () => {
                     tr.appendChild(text);
                     table.appendChild(tr);
                 });
+                table.appendChild(document.createElement('tr'))
             } else {
                 table.innerHTML = '<tr><td colspan="2">No citations available</td></tr>';
             }
-
+                        
+            // Added Exports @dkillough Jul 24 2025
+            const citationExports = doc.querySelector('#gs_citi');
+            
+            if (citationExports) {
+                // Export options (BibTex, EndNote, RefMan, RefWorks)
+                const exportLinks = citationExports.querySelectorAll('a');
+                const exportRow = document.createElement('tr');
+                const exportCell = document.createElement('td');
+                exportCell.colSpan = 2; // span both columns of prior rows
+                
+                exportLinks.forEach((link, index) => {
+                    const exportOption = document.createElement('a');
+                    exportOption.href = link.href;
+                    exportOption.textContent = link.textContent;
+                    if(exportOption.href) {
+                        exportOption.className = 'clickable';  // since it's an anchor tag
+                        exportOption.target = '_blank';
+                    }
+                    exportCell.appendChild(exportOption);
+                    
+                    // insert a tab so the links aren't bunched up next to each other & clear styling
+                    if (index < exportLinks.length - 1) {
+                        exportCell.appendChild(document.createTextNode('\t'));
+                    }
+                })
+                exportRow.appendChild(exportCell);
+                table.appendChild(exportRow);
+            }
+            // (End changes Jul 24 2025)
+            
             dialog.appendChild(table);
             overlay.appendChild(dialog);
             document.body.appendChild(overlay);
