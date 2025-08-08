@@ -18,7 +18,12 @@ browser.runtime.onMessage.addListener((request, sender) => {
         return fetch(`https://scholar.google.com/scholar?q=${encodeURIComponent(request.query)}&hl=en`, {
             headers: headers
         })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Scholar search request failed with status ${response.status}`);
+            }
+            return response.text();
+        })
         .then(html => {
             return { success: true, html: html };
         })
@@ -36,7 +41,12 @@ browser.runtime.onMessage.addListener((request, sender) => {
         return fetch(request.url, {
             headers: headers
         })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Citation request failed with status ${response.status}`);
+            }
+            return response.text();
+        })
         .then(html => {
             return { success: true, html: html };
         })
