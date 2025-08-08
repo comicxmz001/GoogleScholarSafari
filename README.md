@@ -1,8 +1,10 @@
-# GoogleScholarExtension
+# GoogleScholarExtension for Safari
 
 ## Project Overview
 
 GoogleScholarExtension is a Safari web extension that provides quick access to Google Scholar search results directly from your browser. The extension allows you to search academic papers based on the current tab's title or custom search terms, view citations, and interact with Google Scholar's features without leaving your browser.
+
+Current version: 1.0 (refactored popup to a reliable single-file modular script for Safari)
 
 ## Features
 
@@ -56,10 +58,17 @@ GoogleScholarExtension is a Safari web extension that provides quick access to G
 
 The extension consists of several key components:
 
-- **popup.html**: The main user interface
-- **popup.js**: Core functionality and search logic
-- **background.js**: Handles API requests to Google Scholar
-- **manifest.json**: Extension configuration and permissions
+- `popup.html`: Minimal shell that loads the popup script.
+- `popup.js`: Single-file modular script containing:
+  - Utils: text cleanup, number parsing, element helper, URL normalization
+  - Services: active tab title + background messaging for Scholar and citations
+  - Scholar: search HTML parsing + citation URL builder
+  - Dom: rendering and event wiring for results
+  - Citations: modal with copy-to-clipboard and export links
+- `background.js`: Performs cross-origin fetches to Scholar and citation pages with the correct headers.
+- `manifest.json`: Extension configuration and permissions.
+
+See `docs/ARCHITECTURE.md` for a deeper dive into code organization and data flow.
 
 ### Key Features Implementation
 
@@ -85,14 +94,29 @@ The extension consists of several key components:
 ### Project Structure
 
 ```
+docs/
+└── ARCHITECTURE.md     # Detailed architecture and flow
+
 GoogleScholarExtension Extension/
-├── Resources/
-│   ├── popup.html      # Main extension interface
-│   ├── popup.js        # Core extension logic
-│   ├── background.js   # Background processing
-│   ├── manifest.json   # Extension configuration
-│   └── images/         # Extension icons
+└── Resources/
+    ├── popup.html      # Main extension interface
+    ├── popup.js        # Single-file modular popup logic
+    ├── background.js   # Background processing (fetch)
+    ├── manifest.json   # Extension configuration
+    └── images/         # Extension icons
 ```
+
+### Documentation
+
+- Architecture overview: `docs/ARCHITECTURE.md`
+
+### Build
+
+Use the Xcode IDE:
+
+- Open `GoogleScholarExtension.xcodeproj` in Xcode
+- Select the "GoogleScholarExtension" scheme
+- Build and run; then enable the extension in Safari
 
 ## License
 
