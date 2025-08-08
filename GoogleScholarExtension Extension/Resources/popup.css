@@ -3,13 +3,195 @@
 }
 
 body {
-    width: 100px;
-    padding: 10px;
-
-    font-family: system-ui;
-    text-align: center;
+    width: 500px;
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-    /* Dark Mode styles go here. */
+.search-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+#searchInput {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#searchButton {
+    padding: 8px 16px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#searchButton:hover {
+    background-color: #3367d6;
+}
+
+#results {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.result-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.result-title {
+    color: #1a0dab;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.result-authors {
+    color: #006621;
+    font-size: 0.9em;
+    margin-bottom: 4px;
+}
+
+.result-snippet {
+    color: #545454;
+    font-size: 0.9em;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.result-links {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #1a0dab;
+}
+
+.result-links a {
+    color: #1a0dab;
+    text-decoration: none;
+}
+
+.result-links a:hover {
+    text-decoration: underline;
+}
+
+.result-links .separator {
+    color: #70757a;
+    margin: 0 4px;
+}
+
+.citation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.citation-dialog {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    max-width: 90%;
+    width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.citation-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-right: 30px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.citation-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.citation-table tr {
+    border-bottom: 1px solid #eee;
+}
+
+.citation-table tr:last-child {
+    border-bottom: none;
+}
+
+.citation-table td {
+    padding: 1em;
+    vertical-align: middle;
+}
+
+.citation-style {
+    font-weight: bold;
+    color: #1a73e8;
+    width: 45px;
+    font-size: 0.9em;
+    padding: 8px 12px;
+    white-space: nowrap;
+}
+
+.citation-text {
+    line-height: 1.4;
+    color: #202124;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.citation-text.clickable:hover {
+    background-color: #f8f9fa;
+}
+
+.citation-text:active {
+    background-color: #e8f0fe;
+}
+
+.citation-copy,
+.copy-button {
+    display: none;
+}
+
+.no-citations {
+    text-align: center;
+    color: #666;
+    padding: 20px;
 }
