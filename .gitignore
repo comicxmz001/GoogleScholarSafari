@@ -68,3 +68,15 @@ fastlane/test_output
 *.xcworkspace/xcuserdata/
 **/DerivedData/
 **/UserInterfaceState.xcuserstate
+
+
+# AI Agent Specific Files (Private/Local)
+# These files contain agent rules specific to each contributor
+# and should not be committed to the public repository.
+CLAUDE.md
+AGENT.md
+AGENTS.md
+GEMINI.md
+.cursorrules
+.windsurfrules
+.github/copilot-instructions.md
