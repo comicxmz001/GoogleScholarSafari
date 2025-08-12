@@ -60,3 +60,23 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# macOS metadata
+.DS_Store
+\n+# Additional Xcode noise
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+**/DerivedData/
+**/UserInterfaceState.xcuserstate
+
+
+# AI Agent Specific Files (Private/Local)
+# These files contain agent rules specific to each contributor
+# and should not be committed to the public repository.
+CLAUDE.md
+AGENT.md
+AGENTS.md
+GEMINI.md
+.cursorrules
+.windsurfrules
+.github/copilot-instructions.md
