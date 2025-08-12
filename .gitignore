@@ -63,3 +63,8 @@ fastlane/test_output
 
 # macOS metadata
 .DS_Store
+\n+# Additional Xcode noise
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+**/DerivedData/
+**/UserInterfaceState.xcuserstate
