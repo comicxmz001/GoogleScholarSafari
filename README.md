@@ -9,6 +9,7 @@ Current version: 1.0 (refactored popup to a reliable single-file modular script 
 ## Features
 
 - **Instant Search**: Automatically searches Google Scholar using the current tab's title
+- **Accurate Title Seeding**: Reads publisher metadata when available for precise paper titles
 - **Custom Search**: Allows manual search input for specific queries
 - **Rich Results**: Displays comprehensive search results including:
   - Paper titles with direct links
@@ -70,6 +71,18 @@ The extension consists of several key components:
 
 See `docs/ARCHITECTURE.md` for a deeper dive into code organization and data flow.
 
+### Title Extraction Logic
+
+When you open the popup, it seeds the search field using the active page's best-available title:
+
+- Priority:
+  1) `meta[name="citation_title"]`
+  2) `meta[name="dc.Title"]`, `meta[name="DC.title"]`, `meta[property="og:title"]`, `meta[name="twitter:title"]`, `meta[name="parsely-title"]`
+  3) Fallback to the tab title
+- Normalization removes common suffixes like `" | <site/venue>"`.
+
+This improves accuracy over relying on the generic tab title alone.
+
 ### Browser Support
 
 - Safari on macOS only. The popup and background scripts use the WebExtension `browser` API exclusively; there is no `chrome` fallback.
@@ -113,6 +126,14 @@ GoogleScholarExtension Extension/
 ### Documentation
 
 - Architecture overview: `docs/ARCHITECTURE.md`
+
+### Permissions
+
+The extension uses the following permissions:
+
+- `activeTab`: temporary access to the current page so the popup can read title metadata.
+- `scripting`: enables content script injection via the MV3 `browser.scripting` API for metadata extraction.
+- `host_permissions` for `https://scholar.google.com/*`: allows background fetches for search results and citations.
 
 ### Build
 
