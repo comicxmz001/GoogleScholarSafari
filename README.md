@@ -70,6 +70,10 @@ The extension consists of several key components:
 
 See `docs/ARCHITECTURE.md` for a deeper dive into code organization and data flow.
 
+### Browser Support
+
+- Safari on macOS only. The popup and background scripts use the WebExtension `browser` API exclusively; there is no `chrome` fallback.
+
 ### Key Features Implementation
 
 - **Search Processing**: Uses Google Scholar's search API with proper headers

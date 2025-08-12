@@ -30,8 +30,8 @@ const Utils = (() => {
 
 // -- services ----------------------------------------------------------------
 const Services = (() => {
-  // Use Safari's browser API; fallback to chrome if present
-  const br = typeof browser !== 'undefined' ? browser : (typeof chrome !== 'undefined' ? chrome : undefined);
+  // Safari-only: use the WebExtension `browser` API directly
+  const br = browser;
 
   async function getActiveTabTitle() {
     if (!br?.tabs?.query) return '';
@@ -290,4 +290,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   searchButton.addEventListener('click', () => performSearch(searchInput.value));
   searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(searchInput.value); });
 });
-

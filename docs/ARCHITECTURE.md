@@ -7,7 +7,7 @@ Version
 - Current popup design: single-file modular (IIFE sections) in `popup.js`.
 
 Last Updated
-- 2025-08-08
+- 2025-08-12
 
 Overview
 - The popup uses a single-file, modular structure (IIFE sections) for maximum reliability in Safari popups.
@@ -34,4 +34,4 @@ Notes
 - Single-file popup avoids module-loading edge cases in Safari popups while keeping code organized.
 - Background fetches centralize CORS-sensitive requests and user agent handling.
 - UI failures degrade gracefully to a direct Scholar link.
-
+- Safari-only API: Services uses the WebExtension `browser` API exclusively (no `chrome` fallback).
