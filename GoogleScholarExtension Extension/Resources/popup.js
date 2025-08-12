@@ -9,6 +9,15 @@ const Utils = (() => {
   function cleanText(text = '') {
     return String(text).replace(/\u00A0/g, ' ').replace(/\u0082/g, '').replace(/\s+/g, ' ').trim();
   }
+  function normalizeTitleCandidate(raw = '') {
+    const s = cleanText(raw);
+    if (!s) return '';
+    // Heuristic: many sites append " | Venue/Site" to titles.
+    if (s.includes(' | ')) return s.split(' | ')[0].trim();
+    return s;
+  }
+  // Back-compat: map older helper to the new normalization
+  const extractFromOgTitle = normalizeTitleCandidate;
   function extractNumber(text = '') {
     const m = String(text).match(/\d+/);
     return m ? Number(m[0]) : null;
@@ -25,7 +34,7 @@ const Utils = (() => {
     if (!href) return '';
     return href.startsWith('http') ? href : `https://scholar.google.com${href}`;
   }
-  return { cleanText, extractNumber, el, absolutizeScholarUrl };
+  return { cleanText, extractNumber, el, absolutizeScholarUrl, extractFromOgTitle, normalizeTitleCandidate };
 })();
 
 // -- services ----------------------------------------------------------------
@@ -33,10 +42,90 @@ const Services = (() => {
   // Safari-only: use the WebExtension `browser` API directly
   const br = browser;
 
-  async function getActiveTabTitle() {
-    if (!br?.tabs?.query) return '';
+  async function tryGetActiveTab() {
+    if (!br?.tabs?.query) return null;
     const tabs = await br.tabs.query({ active: true, currentWindow: true });
-    return tabs?.[0]?.title || '';
+    return tabs?.[0] || null;
+  }
+
+  async function getActiveTabTitle() {
+    // Priority order for DOM candidates:
+    // 1) meta[name="citation_title"]
+    // 2) meta[name="dc.Title"], meta[name="DC.title"], meta[property="og:title"], meta[name="twitter:title"], meta[name="parsely-title"]
+    // 3) Fallback to the tab's title (existing algorithm)
+    const tab = await tryGetActiveTab();
+    if (tab?.id) {
+      // Try scripting API
+      try {
+        if (br?.scripting?.executeScript) {
+          const [{ result } = {}] = await br.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => {
+              try {
+                const get = (sel) => {
+                  const el = document.querySelector(sel);
+                  return el ? (el.getAttribute('content') || el.content || '').trim() : '';
+                };
+                const pick = (...sels) => {
+                  for (const sel of sels) {
+                    const v = get(sel);
+                    if (v) return v;
+                  }
+                  return null;
+                };
+                const primary = pick('meta[name="citation_title"]');
+                if (primary) return primary;
+                const secondary = pick(
+                  'meta[name="dc.Title"]',
+                  'meta[name="DC.title"]',
+                  'meta[property="og:title"]',
+                  'meta[name="twitter:title"]',
+                  'meta[name="parsely-title"]'
+                );
+                return secondary;
+              } catch (_) { return null; }
+            },
+          });
+          if (result) return Utils.normalizeTitleCandidate(result);
+        }
+      } catch (_) { /* continue to next strategy */ }
+
+      // Try legacy tabs.executeScript next even if scripting exists
+      try {
+        if (br?.tabs?.executeScript) {
+          const [candidate] = await br.tabs.executeScript(tab.id, {
+            code: `(() => {
+              try {
+                const get = (sel) => {
+                  const el = document.querySelector(sel);
+                  return el ? (el.getAttribute('content') || el.content || '').trim() : '';
+                };
+                const pick = (...sels) => {
+                  for (const sel of sels) {
+                    const v = get(sel);
+                    if (v) return v;
+                  }
+                  return null;
+                };
+                const primary = pick('meta[name=\\"citation_title\\"]');
+                if (primary) return primary;
+                const secondary = pick(
+                  'meta[name=\\"dc.Title\\"]',
+                  'meta[name=\\"DC.title\\"]',
+                  'meta[property=\\"og:title\\"]',
+                  'meta[name=\\"twitter:title\\"]',
+                  'meta[name=\\"parsely-title\\"]'
+                );
+                return secondary;
+              } catch (e) { return null; }
+            })();`
+          });
+          if (candidate) return Utils.normalizeTitleCandidate(candidate);
+        }
+      } catch (_) { /* ignore and fall back */ }
+    }
+    // Fallback: active tab's title as-is
+    return tab?.title || '';
   }
   async function fetchScholarHtml(query) {
     const res = await br.runtime.sendMessage({ action: 'fetchScholar', query });
