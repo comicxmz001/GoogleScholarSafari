@@ -8,7 +8,7 @@ This document is intentionally action-oriented: each TODO includes **problem**, 
 
 ## Quick Summary (highest leverage)
 
-- Remove **unused permissions/entitlements** (notably `nativeMessaging` and file-access entitlements).
+- Remove **unused permissions/entitlements** (notably file-access entitlements; `nativeMessaging` permission removed on 2026-02-04).
 - Harden **citation export links** (potential fragility if Scholar ever returns relative URLs without a `<base>` tag).
 - Tighten **security** on all `target="_blank"` links (`rel="noopener noreferrer"`), add an explicit extension-page **CSP**, and minimise any `innerHTML` usage.
 - Improve **UX/accessibility** (labels, keyboard, focus, dark mode).
@@ -16,14 +16,14 @@ This document is intentionally action-oriented: each TODO includes **problem**, 
 
 ## TODOs
 
-### [P0] Remove unused `nativeMessaging` permission (and native messaging scaffolding if unused)
+### [DONE] Remove unused `nativeMessaging` permission (and native messaging scaffolding if unused)
 
 - **Problem**
-  - `GoogleScholarExtension Extension/Resources/manifest.json` requests `nativeMessaging`, and `SafariWebExtensionHandler.swift` is currently an “echo” template. There is no evidence the WebExtension actually calls `browser.runtime.sendNativeMessage`.
+  - (Resolved) `GoogleScholarExtension Extension/Resources/manifest.json` previously requested `nativeMessaging`, but there was no evidence the WebExtension actually calls `browser.runtime.sendNativeMessage`.
 - **Motivation**
   - Unnecessary permissions increase user distrust, increase review friction, and expand the attack surface (native messaging bridges are a high-trust boundary).
 - **Suggested solution**
-  - If native messaging is not a roadmap item: remove `nativeMessaging` from `manifest.json`. Keep the Swift handler minimal (or keep it but ensure it is not reachable/advertised).
+  - (Done) Removed `nativeMessaging` from `manifest.json`. Kept the Swift handler minimal and removed misleading “sendNativeMessage” wording from logging.
   - If native messaging is intended: document the data contract, validate message schemas, and restrict capabilities explicitly (allow-list commands, size limits, logging redaction).
 - **Suggested tests**
   - Install/run in Safari and verify the permission prompt no longer mentions native messaging.
