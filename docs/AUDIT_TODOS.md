@@ -32,15 +32,14 @@ This document is intentionally action-oriented: each TODO includes **problem**, 
   - `GoogleScholarExtension Extension/Resources/manifest.json`
   - `GoogleScholarExtension Extension/SafariWebExtensionHandler.swift`
 
-### [P2] Harden citation export links (relative URL parsing edge case)
+### [DONE] Harden citation export links (relative URL parsing edge case)
 
 - **Problem**
-  - In `popup.js`, export links are created via `a.href = link.href` (not the raw attribute). If the parsed citation HTML contains *relative* export URLs and does *not* provide a `<base href="…">`, then `link.href` will resolve against `about:blank` and produce broken URLs (e.g., `about:blank/scholar.bib?...`).
-  - If your testing shows export works today, that likely means Scholar currently serves absolute export URLs, or includes a `<base>` tag that makes `link.href` resolve correctly. This TODO is about making it resilient to markup changes.
+  - (Resolved) Export links were created via `a.href = link.href`, which relies on the parsed document base URL. If Scholar ever returns relative links without a `<base>` tag, those would resolve against `about:blank` and break.
 - **Motivation**
   - “Export” is a core user flow (BibTeX/EndNote/RefMan/RefWorks). Broken links silently degrade trust.
 - **Suggested solution**
-  - Use `link.getAttribute('href')` (not the `href` property) and run it through `Utils.absolutizeScholarUrl()` before assigning to the clickable link.
+  - (Done) Use `link.getAttribute('href')` and run it through `Utils.absolutizeScholarUrl()` before assigning to the clickable link.
   - Optionally: validate scheme/host (`https://scholar.google.com/*`) for export links before rendering.
 - **Suggested tests**
   - Manual: open popup → “Cite” → click each export link and confirm it opens a valid Scholar URL (not `about:blank/...`).

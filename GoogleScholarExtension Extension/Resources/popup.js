@@ -307,7 +307,8 @@ const Citations = (() => {
       exportCell.colSpan = 2;
       exportLinks.forEach((link, i) => {
         const a = document.createElement('a');
-        a.href = link.href;
+        const rawHref = link.getAttribute('href') || '';
+        a.href = Utils.absolutizeScholarUrl(rawHref);
         a.textContent = link.textContent;
         a.className = 'clickable';
         a.target = '_blank';
