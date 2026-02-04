@@ -98,14 +98,14 @@ This improves accuracy over relying on the generic tab title alone.
 
 - Designed for Safari on macOS
 - Requires Safari 14.0 or later
-- macOS 10.14+
+- macOS 11.0+
 
 ## Development
 
 ### Prerequisites
 
 - Xcode 14.0+
-- macOS 10.14 or later
+- macOS 11.0 or later
 - Safari 14.0+
 
 ### Project Structure
